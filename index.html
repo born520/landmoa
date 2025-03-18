@@ -32,11 +32,11 @@
     .first-paragraph { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #000; }
     .detail-images { display: flex; flex-direction: column; gap: 20px; align-items: center; }
     .detail-images img { max-width: 800px; width: 100%; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .accordion { background: #f5f5f5; color: #333; cursor: pointer; padding: 15px; width: 100%; border: none; text-align: left; outline: none; font-size: 16px; transition: background 0.3s; margin-top: 20px; max-width: 800px; margin-left: auto; margin-right: auto; border-radius: 5px; }
-    .accordion:hover, .accordion.active { background: #e0e0e0; }
+    .accordion { background: #03C75A; color: white; cursor: pointer; padding: 15px; width: 100%; border: none; text-align: left; outline: none; font-size: 16px; transition: background 0.3s; margin-top: 20px; max-width: 800px; margin-left: auto; margin-right: auto; border-radius: 5px; }
+    .accordion:hover, .accordion.active { background: #029f47; }
     .panel { padding: 0 15px; display: none; overflow: hidden; max-width: 800px; margin-left: auto; margin-right: auto; text-align: left; background: #fff; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     .panel p { padding: 15px; font-size: 16px; color: #333; }
-    .refresh-button { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #1a73e8; color: white; border: none; border-radius: 50%; box-shadow: 0 3px 10px rgba(0,0,0,0.2); z-index: 10; cursor: pointer; }
+    .refresh-button { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #03C75A; color: white; border: none; border-radius: 50%; box-shadow: 0 3px 10px rgba(0,0,0,0.2); z-index: 10; cursor: pointer; }
     .refresh-button svg { width: 24px; height: 24px; }
     .error-message { display: none; position: fixed; top: 0; left: 0; right: 0; background: #f44336; color: white; padding: 10px; z-index: 1000; }
     .loading-spinner { display: none; padding: 20px; color: #666; text-align: center; margin-top: 20px; }
@@ -57,7 +57,7 @@
       </div>
       <div id="detail-content" class="detail-content"></div>
       <div id="detail-images" class="detail-images"></div>
-      <button class="accordion">원본 정보 보기</button>
+      <button class="accordion">상품정보 출처</button>
       <div class="panel">
         <p id="band-name"></p>
       </div>
@@ -280,13 +280,23 @@
 
         detailView.style.display = "block";
         grid.style.display = "none";
-        if (spinner) spinner.style.display = "none";
+        if (spinner) spinner.style.display = "none"; // 상세 페이지에서 항상 숨김
 
         if (saveState) {
           window.history.pushState({ postId: index, view: "detail" }, "", "?post=" + index);
           sessionStorage.setItem(SESSION_STATE_KEY, JSON.stringify({ view: "detail", postId: index }));
         }
+
+        // 컨텐츠 하단으로 스크롤 제한
         window.scrollTo(0, 0);
+        setTimeout(function() {
+          var contentBottom = detailContent.getBoundingClientRect().bottom + window.scrollY;
+          var imagesBottom = imagesContainer.getBoundingClientRect().bottom + window.scrollY;
+          var maxScroll = Math.max(contentBottom, imagesBottom);
+          if (window.scrollY + window.innerHeight > maxScroll) {
+            window.scrollTo(0, maxScroll - window.innerHeight);
+          }
+        }, 100); // DOM 렌더링 후 계산
       }, "상세 표시 오류");
     }
 
