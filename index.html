@@ -4062,6 +4062,18 @@
     "supplier": "알 수 없음"
   },
   {
+    "title": "테스트 게시물 1",
+    "content": "두 번째 줄 테스트<br>세 번째 줄",
+    "photos": [
+      "https://picsum.photos/200/300"
+    ],
+    "bandName": "환상제주",
+    "createdAt": 1743678215000,
+    "bandUrl": "https://www.band.us/band/65044284",
+    "bandKey": "AABoEs3bACAGfgDHGyd9vGWj",
+    "supplier": "환상제주"
+  },
+  {
     "title": "쓸쓸한듯 신비롭고, 척박한듯 아름다운 땅",
     "content": "감숙성(간쑤甘肅)<br>자연의 손길로 빚어낸 바위 숲 황하석림<br>푸른 오아시스를 품은 아름다운 거대 사막 바단지린사막<br>일곱가지 빛깔의 무지개산 칠채산<br>중국 738개의 단하지모 중 가장 아름답고 신비로운 칠채산 여행<br>📢4/30 , 5/28 두날짜 예약 진행시 에어부산 라운지 쿠폰 증정<br>🚄 고속열차 이용으로 편안한 이동<br>🍗 토종백숙, 통양베큐 특식 2회 제공<br>👨‍💼👩‍💼 전 일정 쓰루 가이드 동행<br>✨ 칠채산 일출 비경 감상<br>[항공 스케줄]<br>✈️BX341 PUS-XIY // 21:55 ~ 00:35✈️<br>✈️BX342 XIY-PUS // 02:10 ~ 06:30✈️<br>문의)  투어폰 박경연 : 070-8656-1406 / tourpon004@nate.com<br>💚[B2B여행제휴 상담채널]💚<br>http://pf.kakao.com/_AkKcxj/chat",
     "photos": [
@@ -4431,6 +4443,18 @@
     "bandUrl": "https://www.band.us/band/64162613",
     "bandKey": "",
     "supplier": "알 수 없음"
+  },
+  {
+    "title": "테스트 게시물 2",
+    "content": "추가 내용 테스트<br>또 다른 줄",
+    "photos": [
+      "https://picsum.photos/300/200"
+    ],
+    "bandName": "환상제주",
+    "createdAt": 1743591815000,
+    "bandUrl": "https://www.band.us/band/65044284",
+    "bandKey": "AABoEs3bACAGfgDHGyd9vGWj",
+    "supplier": "환상제주"
   },
   {
     "title": "맹그로브 에어텔 최저가 OPEN!!",
@@ -5808,8 +5832,8 @@
   }
 ];
       var originalPostsData = JSON.parse(JSON.stringify(postsData));
-      var suppliers = ["투어폰"];
-      var supplierToBandMap = {"투어폰":["B2B여행제휴네트워크"]};
+      var suppliers = ["투어폰","환상제주"];
+      var supplierToBandMap = {"투어폰":["B2B여행제휴네트워크"],"환상제주":["환상제주"]};
     } catch (e) {
       console.error("데이터 파싱 오류:", e);
       document.body.innerHTML = "<h1>데이터 로드 오류: " + e.message + "</h1>";
@@ -6190,7 +6214,7 @@
         var headerLink = document.querySelector(".header h1 a");
 
         if (!grid || !detailView || !searchFilter || !headerLink) {
-          console.error("DOM 요소 누락 in showDetail: " + (!grid ? "masonry-grid " : "") + (!detailView ? "detail-view " : "") + (!searchFilter ? "search-and-filter " : "") + (!headerLink ? "header-link" : ""));
+          console.error("DOM 요소 누락 in showDetail");
           return;
         }
 
@@ -6198,7 +6222,7 @@
         grid.style.display = "none";
         detailView.style.display = "block";
         searchFilter.style.display = "none";
-        headerLink.textContent = post.title;
+        headerLink.textContent = "부산출발 랜드모아"; // 상단 제목 고정
 
         var detailContent = document.getElementById("detail-content");
         var detailImages = document.getElementById("detail-images");
@@ -6210,7 +6234,7 @@
           return;
         }
 
-        var paragraphs = (post.title + "<br>" + post.content).split("<br>").filter(function(p) { return p.trim(); });
+        var paragraphs = (post.title + "<br>" + post.content).split("<br>").filter(p => p.trim());
         var contentHtml = "";
         for (var i = 0; i < paragraphs.length; i++) {
           var classAttr = i === 0 ? ' class="first-paragraph"' : '';
@@ -6249,7 +6273,7 @@
         var headerLink = document.querySelector(".header h1 a");
 
         if (!grid || !detailView || !searchFilter || !headerLink) {
-          console.error("DOM 요소 누락 in showList: " + (!grid ? "masonry-grid " : "") + (!detailView ? "detail-view " : "") + (!searchFilter ? "search-and-filter " : "") + (!headerLink ? "header-link" : ""));
+          console.error("DOM 요소 누락 in showList");
           return;
         }
 
