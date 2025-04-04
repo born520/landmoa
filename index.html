@@ -269,7 +269,7 @@ function formatDate(timestamp) {
     console.log("유효하지 않은 타임스탬프: " + timestamp);
     return "시간 정보 없음";
   }
-  var date = new Date(Number(timestamp) * 1000); // 숫자로 강제 변환 후 밀리초로 처리
+  var date = new Date(Number(timestamp)); // 밀리초 단위로 직접 사용
   if (isNaN(date.getTime())) {
     console.log("날짜 변환 실패: " + timestamp);
     return "시간 정보 없음";
