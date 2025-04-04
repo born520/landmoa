@@ -269,20 +269,17 @@ function formatDate(timestamp) {
     return "시간 정보 없음";
   }
   
-  let milliseconds = Number(timestamp);
+  let ts = Number(timestamp);
+  let date;
   
-  // 2025년 기준 Unix 타임스탬프는 약 17억 (초 단위)
-  // 간단히 10자리 숫자(초)면 1000을 곱해 밀리초로 변환
-  if (milliseconds < 10000000000) {
-    milliseconds = milliseconds * 1000;
+  // 1970-01-21 13:21 타임스탬프(약 17억)는 실제로 2025-04-04 날짜의 초 단위 타임스탬프
+  // 1743660000 (1970-01-21 날짜) 부근인 경우 초 단위로 인식하고 밀리초로 변환
+  if (ts > 1700000000 && ts < 1800000000) {
+    date = new Date(ts * 1000);
+  } else {
+    date = new Date(ts);
   }
   
-  // 비정상적으로 큰 타임스탬프 (백만 배 문제)
-  else if (milliseconds > 1000000000000000) {
-    milliseconds = milliseconds / 1000000;
-  }
-  
-  var date = new Date(milliseconds);
   if (isNaN(date.getTime())) {
     return "시간 정보 없음";
   }
