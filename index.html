@@ -272,14 +272,18 @@ function formatDate(timestamp) {
   
   let milliseconds = Number(timestamp);
   
+  // 확인: 최신 Unix 타임스탬프는 약 17억(2025년 기준)
+  // 타임스탬프가 초 단위인지 확인 (2025년 기준, 약 17억)
+  if (milliseconds > 1000000000 && milliseconds < 2000000000) {
+    // Unix 초 단위 타임스탬프를 밀리초로 변환
+    milliseconds = milliseconds * 1000;
+    console.log("초 단위 타임스탬프 변환: " + milliseconds);
+  }
+  
   // 비정상적으로 큰 타임스탬프 처리 (백만 배 문제)
-  // 년도가 5만년 이상이면 백만으로 나눔
-  if (milliseconds > 1000000000000000) { // 1,000조 이상이면
+  else if (milliseconds > 1000000000000000) {
     milliseconds = milliseconds / 1000000; // 백만으로 나눔
-  } 
-  // 초 단위인지 밀리초 단위인지 체크
-  else if (milliseconds < 10000000000) { // 10자리 미만이면 초 단위
-    milliseconds = milliseconds * 1000; // 밀리초로 변환
+    console.log("백만배 문제 처리: " + milliseconds);
   }
   
   var date = new Date(milliseconds);
