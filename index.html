@@ -121,15 +121,6 @@
     var scrollHandler = null;
     var lastSelectedKeyword = "";
 
-    // 디버깅을 위한 데이터 출력
-    console.log("게시물 데이터 로드: " + postsData.length + "개");
-    console.log("공급처 목록: ", suppliers);
-    console.log("postsData 공급처 샘플: ", postsData.slice(0, 5).map(post => ({ 
-      title: post.title.substring(0, 20), 
-      supplier: post.supplier, 
-      bandKey: post.bandKey 
-    })));
-
     const categoryMap = {
       "베트남": ["다낭", "나트랑", "푸꾸옥", "하노이", "호치민", "사파"],
       "필리핀": ["보홀", "세부", "마닐라", "보라카이"],
@@ -140,7 +131,6 @@
 
     const allDestinations = Object.values(categoryMap).flat();
 
-    // 필터링 함수들을 먼저 정의
     function filterPosts(query) {
       var filtered = query ? originalPostsData.filter(function(post) {
         return post.title.toLowerCase().includes(query.toLowerCase()) || 
@@ -164,502 +154,241 @@
       loadMorePosts();
     }
 
-function normalizeSupplier(supplier) {
-  if (!supplier) return "";
-  let normalized = supplier.trim().toLowerCase();
-  normalized = normalized.replace(/[s()㈜]/g, "");
-  
-  const synonymMap = {
-    "주식회사": "",
-    "㈜": "",
-    "(주)": "",
-    "투어앤": "투어",
-    "투어&": "투어"
-  };
-  
-  Object.entries(synonymMap).forEach(([key, value]) => {
-    normalized = normalized.replace(key, value);
-  });
-  
-  return normalized;
-}
-
-function filterByBandName(bandName) {
-  console.log("공급처 필터링 시작: '" + bandName + "'");
-  
-  // 초기화
-  currentIndex = 0;
-  var grid = document.getElementById("masonry-grid");
-  if (!grid) {
-    console.error("그리드 요소를 찾을 수 없음");
-    return;
-  }
-  
-  // 빈 선택 처리
-  if (!bandName) {
-    console.log("밴드 미선택 - 전체 데이터 표시");
-    postsData = originalPostsData;
-    grid.innerHTML = "";
-    loadMorePosts();
-    return;
-  }
-  
-  // 필터링 전 데이터 검증
-  if (!originalPostsData || !Array.isArray(originalPostsData)) {
-    console.error("원본 데이터가 유효하지 않음:", originalPostsData);
-    return;
-  }
-  
-  console.log("필터링 전 게시물 수:", originalPostsData.length);
-  
-  // 밴드 이름으로 필터링
-  var normalizedBandName = bandName.trim().toLowerCase();
-  var filtered = [];
-  
-  for (var i = 0; i < originalPostsData.length; i++) {
-    var post = originalPostsData[i];
-    
-    // bandName 속성 확인
-    if (!post.bandName) {
-      console.log("밴드 이름 정보 없는 게시물:", i, post.title);
-      continue;
-    }
-    
-    var postBandName = String(post.bandName).trim().toLowerCase();
-    
-    // 부분 일치도 허용
-    if (postBandName.includes(normalizedBandName) || normalizedBandName.includes(postBandName)) {
-      filtered.push(post);
-      if (filtered.length <= 3) { // 처음 3개만 로그
-        console.log("일치하는 게시물:", post.title, "밴드 이름:", post.bandName);
-      }
-    }
-  }
-  
-  console.log("필터링 결과:", filtered.length, "개 게시물");
-  
-  // 결과 표시
-  if (filtered.length === 0) {
-    console.log("필터링 결과 없음 - 메시지 표시");
-    grid.innerHTML = '<div style="text-align:center;padding:30px;color:#666;grid-column:1/-1;">해당 밴드의 게시물이 없습니다</div>';
-    postsData = [];
-  } else {
-    console.log("필터링 결과 표시");
-    grid.innerHTML = "";
-    postsData = filtered;
-    loadMorePosts();
-  }
-}
-
-// 초기화 함수
-document.addEventListener("DOMContentLoaded", function() {
-  console.log("페이지 로드됨");
-  console.log("원본 데이터 샘플:", originalPostsData.slice(0, 3));
-  console.log("공급처 목록:", suppliers);
-  
-  // 밴드별 게시물 수 확인
-  var bandStats = {};
-  originalPostsData.forEach(function(post) {
-    var bandName = post.bandName || "미지정";
-    bandStats[bandName] = (bandStats[bandName] || 0) + 1;
-  });
-  console.log("밴드별 게시물 수:", bandStats);
-  
-  initializeApp();
-});
-
-function initializeApp() {
-  safeExecute(function() {
-    var urlParams = new URLSearchParams(window.location.search);
-    var postId = urlParams.get("post");
-    var grid = document.getElementById("masonry-grid");
-    var detailView = document.getElementById("detail-view");
-
-    console.log("페이지 초기화...");
-    console.log("공급처 목록:", suppliers);
-    console.log("공급처-밴드 매핑:", supplierToBandMap);
-
-    if (!grid || !detailView) throw new Error("DOM 요소 누락");
-    if (postId && postsData[postId]) {
-      showDetail(parseInt(postId), false);
-    } else {
-      showList(false);
-    }
-
-    scrollHandler = debounce(function() {
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500 && 
-          currentIndex < postsData.length && !isLoadingMore) {
+    function filterByBandName(bandName) {
+      console.log("공급처 필터링 시작: '" + bandName + "'");
+      currentIndex = 0;
+      var grid = document.getElementById("masonry-grid");
+      if (!grid) return;
+      if (!bandName) {
+        postsData = originalPostsData;
+        grid.innerHTML = "";
         loadMorePosts();
+        return;
       }
-    }, 200);
-    window.addEventListener("scroll", scrollHandler);
+      var normalizedBandName = bandName.trim().toLowerCase();
+      var filtered = originalPostsData.filter(function(post) {
+        return post.bandName && post.bandName.toLowerCase().includes(normalizedBandName);
+      });
+      grid.innerHTML = "";
+      postsData = filtered;
+      loadMorePosts();
+    }
 
-    var accordion = document.querySelector(".accordion");
-    accordion.addEventListener("click", function() {
-      this.classList.toggle("active");
-      var panel = this.nextElementSibling;
-      panel.style.display = panel.style.display === "block" ? "none" : "block";
+    document.addEventListener("DOMContentLoaded", function() {
+      initializeApp();
     });
 
-    document.getElementById("search-input").addEventListener("input", function(e) {
-      filterPosts(e.target.value);
-    });
+    function initializeApp() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var postId = urlParams.get("post");
+      var grid = document.getElementById("masonry-grid");
+      var detailView = document.getElementById("detail-view");
 
-    setupDropdownListeners();
-    updateDestinationDropdown("");
-    updateSupplierDropdown();
-    filterByDropdown(""); // 이제 filterByDropdown이 정의된 후 호출됨
-  }, "초기화 오류");
-}
+      if (postId && postsData[postId]) {
+        showDetail(parseInt(postId), false);
+      } else {
+        showList(false);
+      }
 
-function setupDropdownListeners() {
-  var countryDropdown = document.getElementById("country-dropdown");
-  var destDropdown = document.getElementById("destination-dropdown");
-  var supplierDropdown = document.getElementById("supplier-dropdown");
-
-  if (!countryDropdown || !destDropdown || !supplierDropdown) {
-    console.error("드롭다운 요소 누락");
-    return;
-  }
-
-  // 국가 드롭다운
-  countryDropdown.addEventListener("change", function() {
-    lastSelectedKeyword = this.value;
-    updateDestinationDropdown(this.value);
-    filterByDropdown(lastSelectedKeyword);
-  });
-
-  // 목적지 드롭다운
-  destDropdown.addEventListener("change", function() {
-    lastSelectedKeyword = this.value;
-    filterByDropdown(lastSelectedKeyword);
-  });
-
-  // 밴드 드롭다운 - 밴드 이름 필터링으로 변경
-  supplierDropdown.addEventListener("change", function() {
-    var selectedBand = this.value;
-    console.log("공급처 선택:", selectedBand);
-    
-    // 다른 필터 초기화
-    countryDropdown.value = "";
-    destDropdown.value = "";
-    
-    // 필터링 적용
-    filterByBandName(selectedBand);
-  });
-}
-
-function updateDestinationDropdown(country) {
-  var destDropdown = document.getElementById("destination-dropdown");
-  var destinations = country ? (categoryMap[country] || []) : allDestinations;
-  destDropdown.innerHTML = '<option value="">목적지 선택</option>' + 
-    destinations.map(dest => '<option value="' + dest + '">' + dest + '</option>').join("");
-}
-
-function updateSupplierDropdown() {
-  var supplierDropdown = document.getElementById("supplier-dropdown");
-  
-  if (!supplierDropdown) {
-    console.error("공급처 드롭다운 요소를 찾을 수 없습니다");
-    return;
-  }
-  
-  try {
-    // 고유한 간소화된 밴드 이름과 해당 정보 추출
-    var bandInfoMap = {};
-    
-    if (originalPostsData && Array.isArray(originalPostsData)) {
-      originalPostsData.forEach(function(post) {
-        if (post.bandName) {
-          try {
-            // 밴드 이름 간소화
-            var simplifiedName = simplifyBandName(post.bandName);
-            
-            // 중복 처리 로직
-            if (!bandInfoMap[simplifiedName]) {
-              bandInfoMap[simplifiedName] = {
-                originalName: post.bandName,
-                postCount: 1,
-                bandKey: post.bandKey
-              };
-            } else {
-              // 이미 존재하는 경우 카운트 증가
-              bandInfoMap[simplifiedName].postCount++;
-            }
-          } catch (e) {
-            console.error("밴드 이름 간소화 오류:", post.bandName, e);
-          }
+      scrollHandler = debounce(function() {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500 && 
+            currentIndex < postsData.length && !isLoadingMore) {
+          loadMorePosts();
         }
+      }, 200);
+      window.addEventListener("scroll", scrollHandler);
+
+      var accordion = document.querySelector(".accordion");
+      accordion.addEventListener("click", function() {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        panel.style.display = panel.style.display === "block" ? "none" : "block";
+      });
+
+      document.getElementById("search-input").addEventListener("input", function(e) {
+        filterPosts(e.target.value);
+      });
+
+      setupDropdownListeners();
+      updateDestinationDropdown("");
+      updateSupplierDropdown();
+    }
+
+    function setupDropdownListeners() {
+      var countryDropdown = document.getElementById("country-dropdown");
+      var destDropdown = document.getElementById("destination-dropdown");
+      var supplierDropdown = document.getElementById("supplier-dropdown");
+
+      countryDropdown.addEventListener("change", function() {
+        lastSelectedKeyword = this.value;
+        updateDestinationDropdown(this.value);
+        filterByDropdown(lastSelectedKeyword);
+      });
+
+      destDropdown.addEventListener("change", function() {
+        lastSelectedKeyword = this.value;
+        filterByDropdown(lastSelectedKeyword);
+      });
+
+      supplierDropdown.addEventListener("change", function() {
+        filterByBandName(this.value);
       });
     }
-    
-    // 게시물 수에 따라 정렬
-    var sortedBands = [];
-    for (var key in bandInfoMap) {
-      sortedBands.push([key, bandInfoMap[key]]);
-    }
-    sortedBands.sort(function(a, b) {
-      return b[1].postCount - a[1].postCount;
-    });
-    
-    // 드롭다운 업데이트
-    supplierDropdown.innerHTML = '<option value="">밴드 선택</option>';
-    
-    sortedBands.forEach(function(band) {
-      var simplifiedName = band[0];
-      var bandInfo = band[1];
-      
-      var option = document.createElement('option');
-      option.value = bandInfo.originalName;
-      option.textContent = simplifiedName + " (" + bandInfo.postCount + ")";
-      option.setAttribute('data-original', bandInfo.originalName);
-      option.setAttribute('data-band-key', bandInfo.bandKey);
-      option.setAttribute('title', bandInfo.originalName + " - " + bandInfo.postCount + "개 게시물");
-      supplierDropdown.appendChild(option);
-    });
-    
-    console.log("밴드 드롭다운 업데이트 완료: " + sortedBands.length + "개 항목");
-  } catch (e) {
-    console.error("드롭다운 업데이트 오류:", e);
-    supplierDropdown.innerHTML = '<option value="">밴드 선택</option>';
-  }
-}
 
-function formatDate(timestamp) {
-  if (!timestamp || isNaN(timestamp)) return "시간 정보 없음";
-  var tsLength = String(timestamp).length;
-  var date = tsLength > 10 ? new Date(parseInt(timestamp)) : new Date(parseInt(timestamp) * 1000);
-  if (date.getFullYear() < 1970 || date.getFullYear() > 2100) return "시간 정보 없음";
-  return date.getFullYear() + "-" + 
-         String(date.getMonth() + 1).padStart(2, "0") + "-" + 
-         String(date.getDate()).padStart(2, "0") + " " + 
-         String(date.getHours()).padStart(2, "0") + ":" + 
-         String(date.getMinutes()).padStart(2, "0");
-}
-
-function setColumnCount() {
-  var masonryContainer = document.getElementById("masonry-grid");
-  if (!masonryContainer) return;
-  var width = window.innerWidth;
-  var columns = width <= 600 ? 2 : width <= 900 ? 3 : width <= 1200 ? MAX_COLUMNS : MAX_COLUMNS;
-  var cardHeight = width <= 600 ? 420 : width <= 900 ? 480 : width <= 1200 ? 540 : 600;
-  var imgHeight = width <= 600 ? 336 : width <= 900 ? 384 : width <= 1200 ? 432 : 480;
-  masonryContainer.style.gridTemplateColumns = "repeat(" + columns + ", 1fr)";
-  document.querySelectorAll(".grid-item").forEach(function(item) {
-    item.style.height = cardHeight + "px";
-    var cardImg = item.querySelector(".card-img");
-    if (cardImg) cardImg.style.maxHeight = imgHeight + "px";
-  });
-}
-
-window.addEventListener("resize", setColumnCount);
-
-function safeExecute(fn, errorMessage) {
-  try {
-    return fn();
-  } catch (e) {
-    console.error(errorMessage || "오류 발생", e);
-    showErrorMessage("오류: " + (errorMessage || e.message));
-    return null;
-  }
-}
-
-function debounce(func, wait) {
-  var timeout;
-  return function() {
-    clearTimeout(timeout);
-    timeout = setTimeout(func, wait);
-  };
-}
-
-function loadInitialPosts() {
-  safeExecute(function() {
-    currentIndex = 0;
-    isLoadingMore = false;
-    var grid = document.getElementById("masonry-grid");
-    if (!grid) return;
-
-    grid.innerHTML = postsData.length ? "" : '<div style="text-align:center;padding:30px;color:#666;">최근 게시물 없음</div>';
-    if (postsData.length) loadMorePosts();
-    setColumnCount();
-  }, "초기 로드 오류");
-}
-
-function loadMorePosts() {
-  if (isLoadingMore) return;
-  isLoadingMore = true;
-
-  safeExecute(function() {
-    var grid = document.getElementById("masonry-grid");
-    if (!grid) return;
-
-    var fragment = document.createDocumentFragment();
-    var end = Math.min(currentIndex + batchSize, postsData.length);
-
-    for (var i = currentIndex; i < end; i++) {
-      var post = postsData[i];
-      var card = document.createElement("div");
-      card.className = "grid-item";
-      card.setAttribute("data-index", i);
-      card.onclick = function(index) { return function() { showDetail(index); }; }(i);
-      card.innerHTML = post.photos && post.photos.length && post.photos[0] ?
-        '<div class="card-img"><img src="' + post.photos[0] + '" loading="lazy" alt="게시물 이미지" onerror="this.parentNode.parentNode.innerHTML=createTextOnlyHTML(' + i + ')"></div>' +
-        '<div class="card-content"><div class="card-title">' + post.title + '</div><div class="card-excerpt">' + (post.content || "") + '</div><div class="card-timestamp">' + formatDate(post.createdAt) + '</div></div>' :
-        '<div class="card-text-only"><div class="card-title">' + post.title + '</div><div class="card-excerpt">' + (post.content || "") + '</div><div class="card-timestamp">' + formatDate(post.createdAt) + '</div></div>';
-      fragment.appendChild(card);
+    function updateDestinationDropdown(country) {
+      var destDropdown = document.getElementById("destination-dropdown");
+      var destinations = country ? (categoryMap[country] || []) : allDestinations;
+      destDropdown.innerHTML = '<option value="">목적지 선택</option>' + 
+        destinations.map(dest => '<option value="' + dest + '">' + dest + '</option>').join("");
     }
 
-    grid.appendChild(fragment);
-    currentIndex = end;
+    function updateSupplierDropdown() {
+      var supplierDropdown = document.getElementById("supplier-dropdown");
+      supplierDropdown.innerHTML = '<option value="">상품공급처 선택</option>' + 
+        suppliers.map(supplier => '<option value="' + supplier + '">' + supplier + '</option>').join("");
+    }
 
-    var images = grid.querySelectorAll(".card-img img");
-    images.forEach(function(img) {
-      if (img.complete) adjustImageAspectRatio(img);
-      else {
-        img.onload = function() { adjustImageAspectRatio(img); };
-        img.onerror = function() { this.parentNode.parentNode.innerHTML = createTextOnlyHTML(this.closest(".grid-item").getAttribute("data-index")); };
+    function formatDate(timestamp) {
+      if (!timestamp || isNaN(timestamp)) return "시간 정보 없음";
+      var date = new Date(timestamp > 9999999999 ? timestamp : timestamp * 1000);
+      return date.getFullYear() + "-" + 
+             String(date.getMonth() + 1).padStart(2, "0") + "-" + 
+             String(date.getDate()).padStart(2, "0") + " " + 
+             String(date.getHours()).padStart(2, "0") + ":" + 
+             String(date.getMinutes()).padStart(2, "0");
+    }
+
+    function setColumnCount() {
+      var masonryContainer = document.getElementById("masonry-grid");
+      if (!masonryContainer) return;
+      var width = window.innerWidth;
+      var columns = width <= 600 ? 2 : width <= 900 ? 3 : width <= 1200 ? MAX_COLUMNS : MAX_COLUMNS;
+      masonryContainer.style.gridTemplateColumns = "repeat(" + columns + ", 1fr)";
+    }
+
+    window.addEventListener("resize", setColumnCount);
+
+    function debounce(func, wait) {
+      var timeout;
+      return function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(func, wait);
+      };
+    }
+
+    function loadMorePosts() {
+      if (isLoadingMore) return;
+      isLoadingMore = true;
+
+      var grid = document.getElementById("masonry-grid");
+      var fragment = document.createDocumentFragment();
+      var end = Math.min(currentIndex + batchSize, postsData.length);
+
+      for (var i = currentIndex; i < end; i++) {
+        var post = postsData[i];
+        var card = document.createElement("div");
+        card.className = "grid-item";
+        card.setAttribute("data-index", i);
+        card.onclick = function(index) { return function() { showDetail(index); }; }(i);
+        card.innerHTML = post.photos && post.photos.length && post.photos[0] ?
+          '<div class="card-img"><img src="' + post.photos[0] + '" loading="lazy" alt="게시물 이미지" onerror="this.parentNode.parentNode.innerHTML=createTextOnlyHTML(' + i + ')"></div>' +
+          '<div class="card-content"><div class="card-title">' + post.title + '</div><div class="card-excerpt">' + (post.content || "") + '</div><div class="card-timestamp">' + formatDate(post.createdAt) + '</div></div>' :
+          '<div class="card-text-only"><div class="card-title">' + post.title + '</div><div class="card-excerpt">' + (post.content || "") + '</div><div class="card-timestamp">' + formatDate(post.createdAt) + '</div></div>';
+        fragment.appendChild(card);
+      }
+
+      grid.appendChild(fragment);
+      currentIndex = end;
+      setColumnCount();
+      isLoadingMore = false;
+    }
+
+    function createTextOnlyHTML(index) {
+      var post = postsData[index];
+      return '<div class="card-text-only"><div class="card-title">' + post.title + '</div><div class="card-excerpt">' + (post.content || "") + '</div><div class="card-timestamp">' + formatDate(post.createdAt) + '</div></div>';
+    }
+
+    function showDetail(index, saveState) {
+      saveState = saveState !== false;
+      var post = postsData[index];
+      lastScrollPosition = window.scrollY;
+      var detailView = document.getElementById("detail-view");
+      var grid = document.getElementById("masonry-grid");
+      var detailDate = document.getElementById("detail-date");
+      var detailContent = document.getElementById("detail-content");
+      var imagesContainer = document.getElementById("detail-images");
+      var bandLink = document.getElementById("band-link");
+      var searchAndFilter = document.querySelector(".search-and-filter");
+
+      detailDate.textContent = formatDate(post.createdAt);
+      detailContent.innerHTML = formatContentWithTitleParagraph(post.title + "<br>" + (post.content || ""));
+      imagesContainer.innerHTML = "";
+      if (post.photos && post.photos.length) {
+        loadDetailImages(post.photos, imagesContainer);
+      }
+      bandLink.innerHTML = post.bandUrl ? '<a href="' + post.bandUrl + '" target="_blank">' + post.supplier + '</a>' : post.supplier;
+
+      detailView.style.display = "block";
+      grid.style.display = "none";
+      searchAndFilter.style.display = "none";
+      window.scrollTo(0, 0);
+
+      if (saveState) {
+        window.history.pushState({ postId: index, view: "detail" }, "", "?post=" + index);
+      }
+    }
+
+    function loadDetailImages(photoUrls, container) {
+      var fragment = document.createDocumentFragment();
+      photoUrls.forEach(function(url) {
+        if (!url) return;
+        var img = document.createElement("img");
+        img.src = url;
+        img.alt = "게시물 이미지";
+        img.loading = "lazy";
+        img.onerror = function() { this.style.display = "none"; };
+        fragment.appendChild(img);
+      });
+      container.appendChild(fragment);
+    }
+
+    function formatContentWithTitleParagraph(content) {
+      var paragraphs = content.split("<br>").filter(p => p.trim());
+      if (paragraphs.length) {
+        var html = '<p class="first-paragraph">' + paragraphs[0] + '</p>';
+        for (var i = 1; i < paragraphs.length; i++) html += "<p>" + paragraphs[i] + "</p>";
+        return html;
+      }
+      return content || "내용 없음";
+    }
+
+    function showList(saveState) {
+      saveState = saveState !== false;
+      var detailView = document.getElementById("detail-view");
+      var grid = document.getElementById("masonry-grid");
+      var searchAndFilter = document.querySelector(".search-and-filter");
+
+      detailView.style.display = "none";
+      grid.style.display = "grid";
+      searchAndFilter.style.display = "flex";
+      currentIndex = 0;
+      grid.innerHTML = "";
+      loadMorePosts();
+      window.scrollTo(0, lastScrollPosition);
+
+      if (saveState) {
+        window.history.pushState({ view: "list" }, "", window.location.pathname);
+      }
+    }
+
+    window.addEventListener("popstate", function(event) {
+      var state = event.state;
+      if (state && state.view === "detail" && postsData[state.postId]) {
+        showDetail(state.postId, false);
+      } else {
+        showList(false);
       }
     });
-    setColumnCount();
-  }, "추가 로드 오류");
-
-  isLoadingMore = false;
-}
-
-function adjustImageAspectRatio(img) {
-  var aspectRatio = img.naturalWidth / img.naturalHeight;
-  if (aspectRatio > 1) img.classList.add("landscape");
-  else img.classList.add("portrait");
-
-  var card = img.closest(".grid-item");
-  var cardHeight = parseFloat(getComputedStyle(card).height);
-  var imgHeight = img.getBoundingClientRect().height;
-  if (imgHeight >= cardHeight * 0.7) {
-    var excerpt = card.querySelector(".card-excerpt");
-    if (excerpt) excerpt.classList.add("limited-text");
-  }
-}
-
-function createTextOnlyHTML(index) {
-  return safeExecute(function() {
-    var post = postsData[index];
-    return '<div class="card-text-only"><div class="card-title">' + post.title + '</div><div class="card-excerpt">' + (post.content || "") + '</div><div class="card-timestamp">' + formatDate(post.createdAt) + '</div></div>';
-  }, "텍스트 HTML 오류") || '<div class="card-text-only"><div class="card-title">제목 로드 실패</div><div class="card-excerpt">내용 로드 실패</div><div class="card-timestamp">시간 정보 없음</div></div>';
-}
-
-function showDetail(index, saveState) {
-  saveState = saveState !== false;
-  safeExecute(function() {
-    var post = postsData[index];
-    if (!post) return;
-
-    console.log("상세 페이지 공급처: " + post.supplier + ", 밴드 키: " + post.bandKey);
-
-    lastScrollPosition = window.scrollY;
-    var detailView = document.getElementById("detail-view");
-    var grid = document.getElementById("masonry-grid");
-    var detailDate = document.getElementById("detail-date");
-    var detailContent = document.getElementById("detail-content");
-    var imagesContainer = document.getElementById("detail-images");
-    var bandLink = document.getElementById("band-link");
-    var searchAndFilter = document.querySelector(".search-and-filter");
-    var accordion = document.querySelector(".accordion");
-    var panel = document.querySelector(".panel");
-
-    if (!detailView || !grid || !detailDate || !detailContent || !imagesContainer || !bandLink) throw new Error("상세 DOM 요소 누락");
-
-    // 아코디언 초기화 (닫힌 상태로)
-    accordion.classList.remove("active");
-    panel.style.display = "none";
-
-    detailDate.textContent = formatDate(post.createdAt);
-    detailContent.innerHTML = formatContentWithTitleParagraph(post.title + "<br>" + (post.content || ""));
-    imagesContainer.innerHTML = "";
-    if (post.photos && post.photos.length) {
-      loadDetailImages(post.photos, imagesContainer);
-    }
-    var displayName = simplifyBandName(post.bandName);
-bandLink.innerHTML = post.bandUrl ? 
-  '<a href="' + post.bandUrl + '" target="_blank">' + displayName + '</a>' + 
-  ' <small style="color:#666;font-size:0.8em;">(' + post.bandName + ')</small>' : 
-  displayName + ' <small style="color:#666;font-size:0.8em;">(' + post.bandName + ')</small>';
-
-    detailView.style.display = "block";
-    grid.style.display = "none";
-    searchAndFilter.style.display = "none";
-    window.scrollTo(0, 0);
-
-    if (saveState) {
-      window.history.pushState({ postId: index, view: "detail" }, "", "?post=" + index);
-      sessionStorage.setItem("bandPostsState", JSON.stringify({ view: "detail", postId: index }));
-    }
-  }, "상세 표시 오류");
-}
-
-function loadDetailImages(photoUrls, container) {
-  safeExecute(function() {
-    var fragment = document.createDocumentFragment();
-    photoUrls.forEach(function(url) {
-      if (!url) return;
-      var img = document.createElement("img");
-      img.src = url;
-      img.alt = "게시물 이미지";
-      img.loading = "lazy";
-      img.onerror = function() { this.style.display = "none"; };
-      fragment.appendChild(img);
-    });
-    container.appendChild(fragment);
-  }, "이미지 로드 오류");
-}
-
-function formatContentWithTitleParagraph(content) {
-  return safeExecute(function() {
-    var paragraphs = content.split("<br>").filter(p => p.trim());
-    if (paragraphs.length) {
-      var html = '<p class="first-paragraph">' + paragraphs[0] + '</p>';
-      for (var i = 1; i < paragraphs.length; i++) html += "<p>" + paragraphs[i] + "</p>";
-      return html;
-    }
-    return content || "내용 없음";
-  }, "컨텐츠 포맷 오류") || content || "내용 없음";
-}
-
-function showList(saveState) {
-  saveState = saveState !== false;
-  safeExecute(function() {
-    var detailView = document.getElementById("detail-view");
-    var grid = document.getElementById("masonry-grid");
-    var searchAndFilter = document.querySelector(".search-and-filter");
-    if (!detailView || !grid) return;
-
-    detailView.style.display = "none";
-    grid.style.display = "grid";
-    searchAndFilter.style.display = "flex";
-    loadInitialPosts();
-    window.scrollTo(0, lastScrollPosition);
-
-    if (saveState) {
-      window.history.pushState({ view: "list" }, "", window.location.pathname);
-      sessionStorage.setItem("bandPostsState", JSON.stringify({ view: "list" }));
-    }
-  }, "목록 표시 오류");
-}
-
-window.addEventListener("popstate", function(event) {
-  safeExecute(function() {
-    var state = event.state || JSON.parse(sessionStorage.getItem("bandPostsState") || "{}");
-    if (state.view === "detail" && postsData[state.postId]) showDetail(state.postId, false);
-    else showList(false);
-  }, "히스토리 오류");
-});
-
-function showErrorMessage(message) {
-  var errorMessage = document.getElementById("error-message");
-  if (!errorMessage) return;
-  errorMessage.textContent = message || "오류 발생 - 새로고침 필요";
-  errorMessage.style.display = "block";
-  setTimeout(function() { errorMessage.style.display = "none"; }, 3000);
-}
   </script>
 </body>
 </html>
