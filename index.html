@@ -264,15 +264,15 @@
       supplierDropdown.innerHTML = '<option value="">공급처</option>' + supplierOptions;
     }
 
-    function formatDate(timestamp) {
-      if (!timestamp || isNaN(timestamp)) return "시간 정보 없음";
-      var date = new Date(timestamp > 9999999999 ? timestamp : timestamp * 1000);
-      return date.getFullYear() + "-" + 
-             String(date.getMonth() + 1).padStart(2, "0") + "-" + 
-             String(date.getDate()).padStart(2, "0") + " " + 
-             String(date.getHours()).padStart(2, "0") + ":" + 
-             String(date.getMinutes()).padStart(2, "0");
-    }
+function formatDate(timestamp) {
+  if (!timestamp || isNaN(timestamp)) return "시간 정보 없음";
+  var date = new Date(timestamp * 1000); // 항상 초 단위를 밀리초로 변환
+  return date.getFullYear() + "-" + 
+         String(date.getMonth() + 1).padStart(2, "0") + "-" + 
+         String(date.getDate()).padStart(2, "0") + " " + 
+         String(date.getHours()).padStart(2, "0") + ":" + 
+         String(date.getMinutes()).padStart(2, "0");
+}
 
     function setColumnCount() {
       var masonryContainer = document.getElementById("masonry-grid");
