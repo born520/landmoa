@@ -269,11 +269,18 @@ function formatDate(timestamp) {
     console.log("유효하지 않은 타임스탬프: " + timestamp);
     return "시간 정보 없음";
   }
-  var date = new Date(Number(timestamp)); // 밀리초 단위로 직접 사용
+  
+  // 타임스탬프가 초 단위인지 밀리초 단위인지 확인
+  // 일반적으로 10자리면 초, 13자리면 밀리초
+  const isUnixTimestamp = timestamp < 10000000000;
+  const milliseconds = isUnixTimestamp ? timestamp * 1000 : Number(timestamp);
+  
+  var date = new Date(milliseconds);
   if (isNaN(date.getTime())) {
     console.log("날짜 변환 실패: " + timestamp);
     return "시간 정보 없음";
   }
+  
   return date.getFullYear() + "-" + 
          String(date.getMonth() + 1).padStart(2, "0") + "-" + 
          String(date.getDate()).padStart(2, "0") + " " + 
