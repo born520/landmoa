@@ -266,29 +266,24 @@
 
 function formatDate(timestamp) {
   if (!timestamp || isNaN(Number(timestamp))) {
-    console.log("유효하지 않은 타임스탬프: " + timestamp);
     return "시간 정보 없음";
   }
   
   let milliseconds = Number(timestamp);
   
-  // 확인: 최신 Unix 타임스탬프는 약 17억(2025년 기준)
-  // 타임스탬프가 초 단위인지 확인 (2025년 기준, 약 17억)
-  if (milliseconds > 1000000000 && milliseconds < 2000000000) {
-    // Unix 초 단위 타임스탬프를 밀리초로 변환
+  // 2025년 기준 Unix 타임스탬프는 약 17억 (초 단위)
+  // 간단히 10자리 숫자(초)면 1000을 곱해 밀리초로 변환
+  if (milliseconds < 10000000000) {
     milliseconds = milliseconds * 1000;
-    console.log("초 단위 타임스탬프 변환: " + milliseconds);
   }
   
-  // 비정상적으로 큰 타임스탬프 처리 (백만 배 문제)
+  // 비정상적으로 큰 타임스탬프 (백만 배 문제)
   else if (milliseconds > 1000000000000000) {
-    milliseconds = milliseconds / 1000000; // 백만으로 나눔
-    console.log("백만배 문제 처리: " + milliseconds);
+    milliseconds = milliseconds / 1000000;
   }
   
   var date = new Date(milliseconds);
   if (isNaN(date.getTime())) {
-    console.log("날짜 변환 실패: " + timestamp);
     return "시간 정보 없음";
   }
   
