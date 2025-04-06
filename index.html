@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>부산출발 랜드모아</title>
+  <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>부산출발 랜드모아</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: "Noto Sans KR", sans-serif; background: #f5f5f5; padding: 20px; text-align: center; } .container { max-width: 1600px; margin: 0 auto; } .header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #eee; } .header h1 { font-size: 32px; color: #03C75A; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); letter-spacing: 1px; background: linear-gradient(135deg, #03C75A, #029f47); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } .header a { text-decoration: none; color: inherit; /* 링크 색상 상속 */}
+    * { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: "Noto Sans KR", sans-serif; background: #f5f5f5; padding: 20px; text-align: center; } .container { max-width: 1600px; margin: 0 auto; } .header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #eee; } .header h1 { font-size: 32px; color: #03C75A; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); letter-spacing: 1px; background: linear-gradient(135deg, #03C75A, #029f47); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } .header a { text-decoration: none; color: inherit; }
     .search-and-filter { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; } .search-bar { flex: 1 1 300px; max-width: 400px; } #search-input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; } .dropdown-bar { display: flex; gap: 10px; flex-wrap: wrap; } select { padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; min-width: 150px; background-color: white; cursor: pointer; }
-    .masonry-container { display: grid; gap: 20px; width: 100%; /* grid-auto-rows: 0; 제거 - 단순 그리드 */ } /* 컬럼 설정은 JS에서 */
-    .grid-item { width: 100%; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; /* break-inside, margin-bottom 제거 */ }
+    .masonry-container { display: grid; gap: 20px; width: 100%; }
+    .grid-item { width: 100%; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; }
     .grid-item:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.15); }
     .card-img { width: 100%; height: auto; max-height: 480px; overflow: hidden; position: relative; flex-shrink: 0; background-color: #eee; }
     .card-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; transition: opacity 0.3s; opacity: 0; }
@@ -23,33 +21,47 @@
     .accordion { background: #03C75A; color: white; cursor: pointer; padding: 15px; width: 100%; border: none; text-align: left; outline: none; font-size: 16px; transition: background 0.3s; margin-top: 20px; max-width: 800px; margin-left: auto; margin-right: auto; border-radius: 5px; } .accordion:hover, .accordion.active { background: #029f47; } .panel { padding: 0 15px; display: none; overflow: hidden; max-width: 800px; margin-left: auto; margin-right: auto; text-align: left; background: #fff; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); } .panel p { padding: 15px; font-size: 16px; color: #333; } .panel a { color: #03C75A; text-decoration: none; } .panel a:hover { text-decoration: underline; }
     .refresh-button { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #03C75A; color: white; border: none; border-radius: 50%; box-shadow: 0 3px 10px rgba(0,0,0,0.2); z-index: 10; cursor: pointer; display: flex; align-items: center; justify-content: center; } .refresh-button svg { width: 24px; height: 24px; } .back-button { display: none; } #loading-indicator { display: none; margin: 20px auto; text-align: center; color: #555; } #no-results { display: none; text-align: center; color: #888; margin-top: 30px; }
 
-    /* --- 모바일 간격 CSS 수정 --- */
+    /* --- 모바일 간격 CSS 수정 (재조정) --- */
     @media (max-width: 900px) {
       .search-and-filter {
         flex-direction: column; align-items: stretch;
-        gap: 8px; /* 검색창과 드롭다운 사이 간격 줄임 */
-        margin-bottom: 10px; /* 전체 아래 여백 줄임 */
+        gap: 10px; /* 검색창과 드롭다운 그룹 사이 간격 (기존 8px에서 약간 늘림) */
+        margin-bottom: 15px; /* 전체 아래 여백 */
+        padding: 0; /* 내부 패딩 제거 */
       }
-      .search-bar { max-width: none; margin-bottom: 0; }
-      .dropdown-bar { justify-content: center; gap: 8px; margin-top: 0; }
-      select { margin-bottom: 0; margin-top: 0; /* select 여백 제거 */ }
+      .search-bar {
+        max-width: none;
+        margin: 0; /* 위아래 마진 제거 */
+        padding: 0; /* 내부 패딩 제거 */
+      }
+       #search-input {
+         margin: 0; /* input 자체 마진 제거 */
+      }
+      .dropdown-bar {
+        justify-content: center;
+        gap: 8px; /* 드롭다운 사이 간격 */
+        margin: 0; /* 위아래 마진 제거 */
+        padding: 0; /* 내부 패딩 제거 */
+      }
+      select {
+         padding: 8px; /* 모바일에서 패딩 약간 줄임 */
+         font-size: 15px; /* 모바일에서 폰트 약간 줄임 */
+         margin: 0 0 5px 0; /* 아래쪽 마진만 약간 주어 줄바꿈 시 간격 확보 */
+      }
       .header h1 { font-size: 28px; }
     }
     @media (max-width: 600px) {
       body { padding: 10px; }
       .detail-content { padding: 0 10px; }
-      .search-and-filter { gap: 5px; margin-bottom: 8px; } /* 더 작은 화면 간격 */
+      .search-and-filter { gap: 8px; margin-bottom: 12px; } /* 더 작은 화면 간격 */
+      select { padding: 6px; font-size: 14px; min-width: 120px; }
       .dropdown-bar { gap: 5px; }
     }
     /* --- CSS 수정 끝 --- */
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1><a href="./">부산출발 랜드모아</a></h1>
-      </div>
-    <div class="search-and-filter"> <div class="search-bar"> <input type="text" id="search-input" placeholder="검색어 입력 (예: 다낭, 방콕)"> </div> <div class="dropdown-bar"> <select id="country-dropdown"> <option value="">국가 전체</option> <option value="베트남">베트남</option> <option value="필리핀">필리핀</option> <option value="일본">일본</option> <option value="중국">중국</option> <option value="대만">대만</option> <option value="태국">태국</option> <option value="괌">괌</option> <option value="사이판">사이판</option> <option value="기타">기타 국가</option> </select> <select id="destination-dropdown"> <option value="">도시 전체</option> </select> <select id="supplier-dropdown"> <option value="">공급처 전체</option> </select> </div> </div> <div id="detail-view" class="detail-view"> <div class="detail-header"> <div class="detail-title"><p id="detail-date"></p></div> </div> <div id="detail-content" class="detail-content"></div> <div id="detail-images" class="detail-images"></div> <button class="accordion">상품정보 출처</button> <div class="panel"> <p id="band-link"></p> </div> </div> <div class="masonry-container" id="masonry-grid"></div> <div id="loading-indicator">로딩 중...</div> <div id="no-results">검색 결과가 없습니다.</div> </div>
+  <div class="container"> <div class="header"> <h1><a href="./">부산출발 랜드모아</a></h1> </div> <div class="search-and-filter"> <div class="search-bar"> <input type="text" id="search-input" placeholder="검색어 입력 (예: 다낭, 방콕)"> </div> <div class="dropdown-bar"> <select id="country-dropdown"> <option value="">국가 전체</option> <option value="베트남">베트남</option> <option value="필리핀">필리핀</option> <option value="일본">일본</option> <option value="중국">중국</option> <option value="대만">대만</option> <option value="태국">태국</option> <option value="괌">괌</option> <option value="사이판">사이판</option> <option value="기타">기타 국가</option> </select> <select id="destination-dropdown"> <option value="">도시 전체</option> </select> <select id="supplier-dropdown"> <option value="">공급처 전체</option> </select> </div> </div> <div id="detail-view" class="detail-view"> <div class="detail-header"> <div class="detail-title"><p id="detail-date"></p></div> </div> <div id="detail-content" class="detail-content"></div> <div id="detail-images" class="detail-images"></div> <button class="accordion">상품정보 출처</button> <div class="panel"> <p id="band-link"></p> </div> </div> <div class="masonry-container" id="masonry-grid"></div> <div id="loading-indicator">로딩 중...</div> <div id="no-results">검색 결과가 없습니다.</div> </div>
   <button class="refresh-button" onclick="location.reload()" title="새로고침"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <path d="M23 4v6h-6"></path> <path d="M1 20v-6h6"></path> <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path> <path d="M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path> </svg> </button>
 
   <script>
