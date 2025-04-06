@@ -8,6 +8,14 @@
   <style>
     html, body { overflow-x: hidden; width: 100%; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    /* 추가 리셋 */
+    button, input, select, option {
+      margin: 0 !important;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body { font-family: "Noto Sans KR", sans-serif; background: #f5f5f5; padding: 15px 0; text-align: center; }
     .container { max-width: 100%; width: 100%; padding: 0 10px; margin: 0 auto; overflow-x: hidden; }
     @media (min-width: 1600px) { .container { max-width: 1600px; padding: 0; } }
@@ -131,59 +139,103 @@
 
     /* 모바일: 세로 배치, 공백 최소화 */
     @media (max-width: 900px) {
-      .container { padding: 0 8px; }
+      .container { padding: 0 5px; }
       .filter-container {
         flex-direction: column;
-        gap: 2px;
-        padding: 0 8px;
-        margin-bottom: 10px;
+        gap: 0px !important; /* 간격 완전 제거 */
+        padding: 0 5px;
+        margin-bottom: 5px;
       }
       .search-and-filter {
         flex-direction: column;
-        gap: 2px;
+        gap: 0px !important; /* 간격 완전 제거 */
       }
       .search-bar {
         max-width: none;
         min-width: 0;
+        margin-bottom: 0px !important;
       }
       #search-input {
-        padding: 8px;
-        font-size: 15px;
+        padding: 6px;
+        font-size: 14px;
+        margin-bottom: 0px !important;
       }
       .dropdown-bar {
         flex-direction: column !important;
-        gap: 2px;
+        gap: 0px !important; /* 간격 완전 제거 */
         width: 100%;
-      }
-      select {
-        padding: 8px;
-        font-size: 14px;
-        width: 100%;
-        min-width: 0;
-      }
-      .header h1 { font-size: 24px; }
-      .masonry-container { gap: 10px; }
-    }
-
-    @media (max-width: 480px) {
-      body { padding: 5px 0; }
-      .container { padding: 0 5px; }
-      .filter-container {
-        gap: 1px;
-        padding: 0 5px;
-        margin-bottom: 8px;
-      }
-      .search-and-filter {
-        gap: 1px;
-      }
-      .dropdown-bar {
-        gap: 1px;
+        margin-top: 0px !important;
       }
       select {
         padding: 6px;
-        font-size: 13px;
+        font-size: 14px;
+        width: 100%;
+        min-width: 0;
+        margin-bottom: 0px !important;
+        margin-top: 0px !important;
       }
-      .masonry-container { gap: 8px; grid-template-columns: repeat(2, 1fr) !important; }
+      .header {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+      }
+      .header h1 { font-size: 24px; }
+      .masonry-container { 
+        gap: 10px; 
+        margin-top: 0px !important;
+      }
+      
+      /* 모바일에서 기본 스타일 재정의 */
+      .filter-container > *, 
+      .search-and-filter > *, 
+      .dropdown-bar > * {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+      }
+      
+      input, select, button {
+        height: 36px !important;
+      }
+      
+      /* 모든 가능한 간격 제거 */
+      .header + *, * + .filter-container, .filter-container + *, * + .masonry-container {
+        margin-top: 0 !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 2px 0; }
+      .container { padding: 0 2px; }
+      .filter-container {
+        gap: 0px !important;
+        padding: 0 2px;
+        margin-bottom: 2px;
+      }
+      .search-and-filter {
+        gap: 0px !important;
+      }
+      .dropdown-bar {
+        gap: 0px !important;
+      }
+      select, #search-input {
+        padding: 4px;
+        font-size: 13px;
+        margin: 0 !important;
+        height: 32px !important;
+      }
+      .masonry-container { 
+        gap: 5px; 
+        grid-template-columns: repeat(2, 1fr) !important; 
+        margin-top: 0 !important;
+      }
+      .header {
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+      }
+      .header h1 {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
@@ -469,7 +521,8 @@
       var supplierDropdown = document.getElementById("supplier-dropdown");
       countryDropdown.addEventListener("change", function() {
         lastSelectedKeyword = this.value;
-        updateDestinationDropdown(this.value);
+        updateDestination
+Dropdown(this.value);
         filterByDropdown(lastSelectedKeyword);
       });
       destDropdown.addEventListener("change", function() {
