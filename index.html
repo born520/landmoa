@@ -16,13 +16,13 @@
     .header h1 { font-size: 28px; color: #03C75A; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); letter-spacing: 1px; background: linear-gradient(135deg, #03C75A, #029f47); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .header a { text-decoration: none; color: inherit; }
 
-    /* 새로운 상위 컨테이너 */
+    /* 상위 컨테이너 */
     .filter-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      gap: 15px;
+      gap: 10px;
       width: 100%;
       max-width: 100%;
       margin-bottom: 20px;
@@ -32,7 +32,7 @@
     .search-and-filter {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
       justify-content: center;
     }
@@ -53,9 +53,10 @@
 
     .dropdown-bar {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
       justify-content: center;
+      width: 100%;
     }
 
     select {
@@ -66,6 +67,7 @@
       min-width: 150px;
       background-color: white;
       cursor: pointer;
+      width: 100%;
     }
 
     .masonry-container { display: grid; gap: 15px; width: 100%; }
@@ -112,6 +114,10 @@
       }
       .dropdown-bar {
         flex-wrap: nowrap;
+        width: auto;
+      }
+      select {
+        width: auto;
       }
     }
 
@@ -119,12 +125,12 @@
       .container { padding: 0 8px; }
       .filter-container {
         flex-direction: column;
-        gap: 5px;
+        gap: 4px;
         padding: 0 8px;
       }
       .search-and-filter {
         flex-direction: column;
-        gap: 5px;
+        gap: 4px;
       }
       .search-bar {
         max-width: none;
@@ -134,14 +140,12 @@
         font-size: 15px;
       }
       .dropdown-bar {
-        gap: 5px;
-        justify-content: space-between;
+        flex-direction: column;
+        gap: 4px;
       }
       select {
-        flex: 1 1 120px;
         padding: 8px;
         font-size: 14px;
-        min-width: 120px;
       }
       .header h1 { font-size: 24px; }
       .masonry-container { gap: 10px; }
@@ -151,20 +155,18 @@
       body { padding: 5px 0; }
       .container { padding: 0 5px; }
       .filter-container {
-        gap: 3px;
+        gap: 2px;
         padding: 0 5px;
       }
       .search-and-filter {
-        gap: 3px;
+        gap: 2px;
       }
       .dropdown-bar {
-        gap: 3px;
+        gap: 2px;
       }
       select {
-        flex: 1 1 100px;
         padding: 6px;
         font-size: 13px;
-        min-width: 100px;
       }
       .masonry-container { gap: 8px; grid-template-columns: repeat(2, 1fr) !important; }
     }
