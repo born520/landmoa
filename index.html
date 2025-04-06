@@ -4,111 +4,45 @@
   <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>부산출발 랜드모아</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    /* --- 기본 스타일 --- */
-    html, body { overflow-x: hidden; width: 100%; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: "Noto Sans KR", sans-serif; background: #f5f5f5; padding: 15px 0; text-align: center; }
-    .container { max-width: 100%; width: 100%; padding: 0 10px; margin: 0 auto; }
-    @media (min-width: 1600px) { .container { max-width: 1600px; padding: 0; } }
-
-    .header { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-    .header h1 { font-size: 28px; color: #03C75A; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); letter-spacing: 1px; background: linear-gradient(135deg, #03C75A, #029f47); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .header a { text-decoration: none; color: inherit; }
-
-    /* --- 검색/필터 데스크탑 + 기본 스타일 --- */
-    .search-and-filter {
-      display: flex; align-items: center; justify-content: center;
-      gap: 10px; /* 요소 사이 가로 간격 */
-      margin-bottom: 20px; width: 100%;
-      flex-wrap: wrap; /* <<<<< 기본적으로 줄바꿈 허용 */
-    }
-    .search-bar {
-      flex: 1 1 300px; /* 기본 너비 300px, 늘어나거나 줄어듦 */
-      max-width: 400px; /* 최대 너비 */
-      min-width: 250px; /* 최소 너비 */
-    }
-    #search-input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
-    .dropdown-bar {
-      display: flex; gap: 10px;
-      flex-wrap: wrap; /* <<<<< 드롭다운들 줄바꿈 허용 */
-      justify-content: center;
-      flex: 1 1 auto; /* 남은 공간 차지하도록 */
-    }
-    select {
-       padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;
-       min-width: 150px; background-color: white; cursor: pointer;
-       flex: 0 0 auto; /* 기본 크기 유지 */
-    }
-    /* --- 검색/필터 끝 --- */
-
-    .masonry-container { display: grid; gap: 15px; width: 100%; }
-    .grid-item { width: 100%; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; }
-    .grid-item:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.15); }
-    .card-img { width: 100%; height: auto; max-height: 480px; overflow: hidden; position: relative; flex-shrink: 0; background-color: #eee; }
-    .card-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; transition: opacity 0.3s; opacity: 0; }
-    .card-img img.loaded { opacity: 1; } .card-img.no-image { display: none; }
-    .card-content { padding: 10px 15px 15px; flex: 1; overflow: hidden; display: flex; flex-direction: column; }
-    .card-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 6px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .card-excerpt { font-size: 13px; color: #555; line-height: 1.4; word-wrap: break-word; overflow: hidden; flex: 1; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; text-overflow: ellipsis; margin-bottom: 8px; }
-    .card-timestamp { font-size: 11px; color: #888; margin-top: auto; padding-top: 8px; border-top: 1px solid #eee; }
-    .grid-item.text-only .card-img { display: none; } .grid-item.text-only .card-excerpt { -webkit-line-clamp: 8; }
-
-    .detail-view { display: none; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 20px 0; margin-bottom: 20px; }
-    .detail-header { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; text-align: center; } .detail-title p { color: #666; font-size: 13px; }
-    .detail-content { line-height: 1.7; margin-bottom: 20px; font-size: 15px; color: #444; max-width: 800px; margin-left: auto; margin-right: auto; text-align: left; padding: 0 15px; } .detail-content .first-paragraph { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #111; } .detail-content p { margin-bottom: 0.8em; }
-    .detail-images { display: flex; flex-direction: column; gap: 15px; align-items: center; margin-bottom: 20px; }
+    html, body { overflow-x: hidden; width: 100%; } * { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: "Noto Sans KR", sans-serif; background: #f5f5f5; padding: 15px 0; text-align: center; } .container { max-width: 100%; width: 100%; padding: 0 10px; margin: 0 auto; } @media (min-width: 1600px) { .container { max-width: 1600px; padding: 0; } }
+    .header { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; } .header h1 { font-size: 28px; color: #03C75A; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); letter-spacing: 1px; background: linear-gradient(135deg, #03C75A, #029f47); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } .header a { text-decoration: none; color: inherit; }
+    .search-and-filter { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; width: 100%; flex-wrap: wrap; }
+    .search-bar { flex: 1 1 300px; max-width: 400px; min-width: 250px; } #search-input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+    .dropdown-bar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; flex: 1 1 auto; }
+    select { padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; min-width: 150px; background-color: white; cursor: pointer; flex: 0 0 auto; }
+    .masonry-container { display: grid; gap: 15px; width: 100%; } .grid-item { width: 100%; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; } .grid-item:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.15); } .card-img { width: 100%; height: auto; max-height: 480px; overflow: hidden; position: relative; flex-shrink: 0; background-color: #eee; } .card-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; transition: opacity 0.3s; opacity: 0; } .card-img img.loaded { opacity: 1; } .card-img.no-image { display: none; } .card-content { padding: 10px 15px 15px; flex: 1; overflow: hidden; display: flex; flex-direction: column; } .card-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 6px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .card-excerpt { font-size: 13px; color: #555; line-height: 1.4; word-wrap: break-word; overflow: hidden; flex: 1; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; text-overflow: ellipsis; margin-bottom: 8px; } .card-timestamp { font-size: 11px; color: #888; margin-top: auto; padding-top: 8px; border-top: 1px solid #eee; } .grid-item.text-only .card-img { display: none; } .grid-item.text-only .card-excerpt { -webkit-line-clamp: 8; }
+    .detail-view { display: none; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 20px 0; margin-bottom: 20px; } .detail-header { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; text-align: center; } .detail-title p { color: #666; font-size: 13px; } .detail-content { line-height: 1.7; margin-bottom: 20px; font-size: 15px; color: #444; max-width: 800px; margin-left: auto; margin-right: auto; text-align: left; padding: 0 15px; } .detail-content .first-paragraph { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #111; } .detail-content p { margin-bottom: 0.8em; } .detail-images { display: flex; flex-direction: column; gap: 15px; align-items: center; margin-bottom: 20px; }
     .detail-images img { max-width: 800px; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block; margin-left: auto; margin-right: auto; }
     .accordion { background: #03C75A; color: white; cursor: pointer; padding: 12px 15px; width: 100%; border: none; text-align: left; outline: none; font-size: 15px; transition: background 0.3s; margin-top: 15px; max-width: 800px; margin-left: auto; margin-right: auto; border-radius: 5px; } .accordion:hover, .accordion.active { background: #029f47; } .panel { padding: 0 15px; display: none; overflow: hidden; max-width: 800px; margin-left: auto; margin-right: auto; text-align: left; background: #fff; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); } .panel p { padding: 15px; font-size: 15px; color: #444; } .panel a { color: #03C75A; text-decoration: none; } .panel a:hover { text-decoration: underline; }
     .refresh-button { position: fixed; bottom: 15px; right: 15px; width: 45px; height: 45px; background: #03C75A; color: white; border: none; border-radius: 50%; box-shadow: 0 3px 10px rgba(0,0,0,0.2); z-index: 10; cursor: pointer; display: flex; align-items: center; justify-content: center; } .refresh-button svg { width: 22px; height: 22px; }
     #loading-indicator, #no-results { display: none; margin: 20px auto; text-align: center; color: #777; font-size: 14px; }
 
-    /* --- 모바일 간격 CSS 수정 (gap:0 및 margin-bottom 사용) --- */
+    /* --- 모바일 CSS 수정: 검색창 숨기기 --- */
     @media (max-width: 900px) {
       .container { padding: 0 8px; }
       .search-and-filter {
-        flex-direction: column; /* 세로 배치 */
-        align-items: stretch;   /* 너비 꽉 채움 */
-        gap: 0 !important;      /* <<<< 요소 사이 간격 0 강제 */
-        margin: 0 0 15px 0;     /* 위쪽 마진 0, 아래쪽만 여백 */
-        padding: 0;
+        flex-direction: column; align-items: stretch;
+        gap: 10px; /* 드롭다운 사이의 간격만 필요 */
+        margin: 0 0 15px 0; padding: 0;
         width: 100%;
-        flex-wrap: wrap;        /* 모바일에선 wrap 허용 */
       }
       .search-bar {
-        max-width: none;
-        margin: 0 !important;   /* <<<< 검색창 위아래 마진 0 강제 */
-        padding: 0;
-        margin-bottom: 8px !important; /* <<<< 검색창 아래 간격 명시적 추가 (값 조절 가능) */
+        display: none; /* <<<<< 검색창 숨기기 */
       }
-      #search-input { margin: 0; width: 100%; font-size: 15px; padding: 8px; }
       .dropdown-bar {
-          justify-content: center;
-          gap: 5px;             /* 드롭다운 내부 가로 간격 */
-          margin: 0 !important;   /* <<<< 드롭다운 그룹 자체 위아래 마진 0 강제 */
-          padding: 0;
-          width: 100%;
-          flex-wrap: wrap;        /* 드롭다운 줄바꿈 허용 */
+          justify-content: center; gap: 5px; margin: 0; padding: 0; width: 100%; flex-wrap: wrap;
       }
       select {
-         flex-grow: 1; flex-shrink: 1; flex-basis: 130px;
-         padding: 8px; font-size: 14px;
-         margin: 3px 0;          /* 위아래 간격 */
-         min-width: 120px;
+         flex-grow: 1; flex-shrink: 1; flex-basis: 130px; padding: 8px; font-size: 14px; margin: 3px 0; min-width: 120px;
       }
-      .header h1 { font-size: 24px; }
-      .masonry-container { gap: 10px; }
+      .header h1 { font-size: 24px; } .masonry-container { gap: 10px; }
     }
-    @media (max-width: 480px) { /* 더 작은 화면 */
-      body { padding: 5px 0; }
-      .container { padding: 0 5px; }
-      .search-and-filter { margin-bottom: 10px; }
-      .search-bar { margin-bottom: 5px !important; /* 더 작은 간격 */ }
-      select {
-         padding: 6px; font-size: 13px; min-width: 100px; flex-basis: 100px; margin: 2px 0;
-         max-width: calc(50% - 4px);
-      }
-      .dropdown-bar { gap: 4px; }
-      .masonry-container { gap: 8px; grid-template-columns: repeat(2, 1fr) !important; }
+    @media (max-width: 480px) {
+       body { padding: 5px 0; } .container { padding: 0 5px; }
+       .search-and-filter { margin-bottom: 10px; }
+       /* .search-bar 는 이미 숨겨짐 */
+       select { padding: 6px; font-size: 13px; min-width: 100px; flex-basis: 100px; margin: 2px 0; max-width: calc(50% - 4px); }
+       .dropdown-bar { gap: 4px; } .masonry-container { gap: 8px; grid-template-columns: repeat(2, 1fr) !important; }
     }
     /* --- CSS 수정 끝 --- */
   </style>
